@@ -1,0 +1,151 @@
+package pages;
+
+import static org.junit.Assert.fail;
+
+import java.io.FileInputStream;
+import java.util.Properties;
+
+import org.junit.Assert;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.opera.OperaOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import cucumber.api.Scenario;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+public class LoginGlueCodee
+{
+	public WebDriver driver;
+    public WebDriverWait wait;
+	public Login lp;
+	public Properties pro;
+	public Scenario s;
+	@Before
+	public void methhod1(Scenario s) throws Exception
+	{
+		//use scenario object for current scenario
+		this.s=s;
+		//load properties to ram
+		FileInputStream fip=new FileInputStream("F:\\New folder\\way2sms\\src\\test\\resources\\files\\properties.properties");
+		pro=new Properties();
+		pro.load(fip);
+	}
+	@Given("^launch site using \"(.*)\"$")
+	public void method2(String x)
+	{
+		if(x.equalsIgnoreCase("chrome"))
+		{
+			System.setProperty("webdriver.chrome.driver",pro.getProperty("cdriver"));
+			driver=new ChromeDriver();
+		}
+		else if(x.equalsIgnoreCase("firefox"))
+		{
+			System.setProperty("webdriver.gecko.driver",pro.getProperty("fdriver"));
+			driver=new FirefoxDriver();
+		}
+		else if(x.equalsIgnoreCase("opera"))
+		{
+			OperaOptions o=new OperaOptions();
+			o.setBinary("C:\\Program Files\\Opera\\56.0.3051.36\\opera.exe");
+			System.setProperty("webdriver.opera.driver",pro.getProperty("odriver"));
+			driver=new OperaDriver(o);
+		}
+		lp=new Login(driver);
+		driver.get(pro.getProperty("url"));
+		wait=new WebDriverWait(driver,20);
+		wait.until(ExpectedConditions.visibilityOf(lp.mbno));
+		driver.manage().window().maximize();
+	}
+	@Then("^title contains \"(.*)\"$")
+	public void method3(String x)
+	{
+		wait.until(ExpectedConditions.visibilityOf(lp.mbno));
+		String z=driver.getTitle();
+		if(z.contains(x))
+		{
+			s.write("title test failed");
+		}
+		else
+		{
+			byte ssbytes[]=((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES);
+			s.embed(ssbytes,"title test failed");
+			Assert.fail();
+		}
+	}
+	@And("^close site$")
+	public void method4()
+	{
+		driver.close();
+	}
+	@When("^enter mobile no as\"(.*)\"$")
+	public void method5(String x)
+	{
+		wait.until(ExpectedConditions.visibilityOf(lp.mbno));
+		lp.fillmbno(x);
+	}
+	@And("^enter password as\"(.*)\"$")
+	public void method6(String x)
+	{
+		wait.until(ExpectedConditions.visibilityOf(lp.pwd));
+		lp.fillpwd(x);
+	}
+	@And("^click login$")
+	public void method7()
+	{
+		wait.until(ExpectedConditions.visibilityOf(lp.signin));
+		lp.clickSignin();
+	}
+	@Then("^validate output criteria as \"(.*)\"$")
+	public void method8(String x)
+	{
+		try
+		{
+			if(x.contains("mbno blank")&&lp.mbno_blank_err.isDisplayed())
+			{
+				s.write("mobile number blank test passed");
+			}
+			else if(x.contains("pwd blank")&&lp.pwd_blank_err.isDisplayed())
+			{
+				s.write("password blank test passed");
+			}
+			else if(x.contains("mbno invalid")&&lp.mbno_invalid.isDisplayed())
+			{
+				s.write("mobile number invalid test passed");
+			}
+			else if(x.contains("pwd invalid")&&lp.pwd_invalid.isDisplayed())
+			{
+				s.write("password invalid test failed");
+			}
+			else if(x.contains("all valid")&&lp.all_valid.isDisplayed())
+			{
+				s.write("Login test passed");
+			}
+			else
+			{
+				byte ssbytes[]=((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES);
+				s.embed(ssbytes,"login test failed");
+				Assert.fail();
+			}
+		}
+		catch(Exception e)
+		{
+			byte ssbytes[]=((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES);
+			s.embed(ssbytes,e.getMessage());
+		}
+	}
+	@And("^close site$")
+	public void method9()
+	{
+		driver.close();
+}
+}

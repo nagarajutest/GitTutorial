@@ -1,0 +1,40 @@
+package basics;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class SortingString
+{
+	public static void main(String[] args)
+	{
+		ArrayList<String> x=new ArrayList<String>();
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Enter Size");
+		int n=Integer.parseInt(sc.nextLine());
+		for(int i=0;i<n;i++)
+		{
+			System.out.println("Enter a number");
+			x.add(sc.nextLine());
+		}
+		for(int i=0;i<n;i++)
+		{
+			for(int j=0;j<(n-1);j++)
+			{
+				if(x.get(j).compareToIgnoreCase(x.get(j+1))>0)
+				{
+					String temp=x.get(j);
+					x.set(j,x.get(j+1));
+					x.set(j+1,temp);
+				}
+			}
+		}
+		for(int i=0;i<n;i++)
+		{
+			System.out.print(x.get(i)+" ");
+		}
+
+
+	}
+
+}

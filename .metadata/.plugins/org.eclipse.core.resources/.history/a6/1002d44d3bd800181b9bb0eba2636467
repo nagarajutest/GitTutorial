@@ -1,0 +1,24 @@
+package basics;
+
+public class fibonacii 
+{
+
+	public static void main(String[] args)
+	{
+		int l=25;
+		int x=0;
+		int y=1;
+		System.out.println(x+" "+y);
+		int z=x+y;
+		while(z<=l)
+		{
+			x=y;
+			y=z;
+			z=x+y;
+		
+			System.out.println(z);
+			break;
+		}
+	}
+
+}

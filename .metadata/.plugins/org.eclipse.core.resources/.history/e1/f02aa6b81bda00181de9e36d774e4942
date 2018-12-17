@@ -1,0 +1,23 @@
+package basics;
+
+public class Palindromeno 
+{
+	public static void main(String[] args) 
+	{
+		int x=5647;
+		int y=0;
+		int d;
+		While(x>0)
+		{
+			d=x%10;
+			y=y*10+d;
+			x=x/10;
+			
+		}
+		System.out.print(d);
+
+	}
+
+	
+
+}
